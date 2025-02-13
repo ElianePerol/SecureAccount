@@ -30,8 +30,6 @@ Vous êtes chargé de développer un système de création de compte et d'identi
 #### 3. Gestion des Erreurs
 - Gérez les erreurs courantes (ex : nom d'utilisateur déjà pris, e-mail déjà utilisé) en affichant des messages d'erreur clairs à l'utilisateur.
 
----
-
 ### Partie 2 : Authentification et Gestion des Sessions
 
 #### 1. Formulaire d'Authentification
@@ -52,8 +50,6 @@ Vous êtes chargé de développer un système de création de compte et d'identi
 #### 4. Authentification à Deux Facteurs (2FA)
 - Ajoutez une option pour l'authentification à deux facteurs en utilisant un code OTP (One-Time Password) envoyé par e-mail.
 
----
-
 ### Partie 3 : Protection contre les Attaques Courantes
 
 #### 1. Protection contre les Injections SQL
@@ -68,8 +64,6 @@ Vous êtes chargé de développer un système de création de compte et d'identi
 - Générez un jeton CSRF pour chaque formulaire et vérifiez-le lors de la soumission.
 - Utilisez des bibliothèques ou frameworks pour simplifier la gestion des jetons CSRF.
 
----
-
 ### Partie 4 : Journalisation et Sécurité des Données
 
 #### 1. Journalisation des Accès
@@ -83,8 +77,6 @@ Vous êtes chargé de développer un système de création de compte et d'identi
 #### 3. Gestion des Droits d'Accès
 - Créez des rôles utilisateurs (ex : administrateur, utilisateur standard) et attribuez des droits d'accès en fonction des rôles.
 - Restreignez l'accès aux fonctionnalités sensibles (ex : suppression de compte) aux utilisateurs autorisés.
-
----
 
 ### Partie 5 : Tests et Validation
 
