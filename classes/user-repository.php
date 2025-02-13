@@ -12,7 +12,6 @@ class UserRepository {
 
     public function save(User $user): int {
         try {
-
             $salt = bin2hex(random_bytes(32));
             $saltedPassword = $user->getPassword() . $salt;
 
@@ -31,8 +30,23 @@ class UserRepository {
 
             return (int)$this->pdo->lastInsertId();
         } catch (\PDOException $e) {
+            error_log("Erreur lors de l'enregistrement de l'utilisateur: " . $e->getMessage());
             throw new \RuntimeException("Erreur lors de l'enregistrement de l'utilisateur: " . $e->getMessage());
         }
+    }
+
+    private function createUserFromResult(array $result): ?User {
+        if (!$result) {
+            return null;
+        }
+
+        return new User(
+            $result['username'],
+            $result['email'],
+            $result['password'],
+            (int)$result['id'],
+            $result['salt']
+        );
     }
 
     public function findByEmail(string $email): ?User {
@@ -57,6 +71,7 @@ class UserRepository {
                 $salt
             );
         } catch (\PDOException $e) {
+            error_log("Erreur lors de la recherche de l'utilisateur par email: " . $e->getMessage());
             throw new \RuntimeException("Erreur lors de la recherche de l'utilisateur: " . $e->getMessage());
         }
     }
@@ -81,11 +96,45 @@ class UserRepository {
                 $result['email'],
                 $result['password'],
                 (int)$result['id'],
-                $salt
+                $result['salt']
             );
         } catch (\PDOException $e) {
+            error_log("Erreur lors de la recherche de l'utilisateur par nom d'utilisateur ou email: " . $e->getMessage());
             throw new \RuntimeException("Erreur lors de la recherche de l'utilisateur: " . $e->getMessage());
         }
     }
+
+    public function findById(int $id): ?User {
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = :id");
+            $stmt->execute([':id' => $id]);
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
     
+            if (!$result) {
+                return null;
+            }
+    
+            return new User(
+                $result['username'],
+                $result['email'],
+                $result['password'], // Mot de passe haché
+                (int)$result['id'],
+                $result['salt']
+            );
+    
+        } catch (\PDOException $e) {
+            error_log("Erreur lors de la recherche de l'utilisateur par ID: " . $e->getMessage());
+            throw new \RuntimeException("Erreur lors de la recherche de l'utilisateur.");
+        }
+    }
+
+    public function set2faSecret(int $userId, ?string $secret): void {
+        try {
+            $stmt = $this->pdo->prepare("UPDATE users SET 2fa_secret = :secret WHERE id = :id");
+            $stmt->execute([':secret' => $secret, ':id' => $userId]);
+        } catch (\PDOException $e) {
+            error_log("Erreur A2F :"  . $e->getMessage());
+            throw new \RuntimeException("Erreur A2F.");
+        }
+    }
 }

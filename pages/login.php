@@ -38,6 +38,17 @@ unset($_SESSION['errors']);
                                 <div id="passwordError" class="error"></div>
                             </div>
 
+                            <?php if ($show2FAField): ?>
+                            <div class="mb-3">
+                                <label for="otp" class="form-label">Code 2FA</label>
+                                <input type="text" class="form-control" id="otp" name="otp" 
+                                       inputmode="numeric" pattern="[0-9]*" maxlength="6" required>
+                                <div class="invalid-feedback">
+                                    Veuillez entrer votre code 2FA
+                                </div>
+                            </div>
+                            <?php endif; ?>
+
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-primary">Se connecter</button>
                             </div>

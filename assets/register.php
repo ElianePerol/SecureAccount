@@ -9,20 +9,18 @@ require_once "../classes/registration-service.php";
 
 use App\{DatabaseConnection, UserValidator, UserRepository, RegistrationService};
 
-// Initialisation des services
 $dbConnection = DatabaseConnection::getInstance();
 $userRepository = new UserRepository($dbConnection);
 $userValidator = new UserValidator();
 $registrationService = new RegistrationService($userValidator, $userRepository);
 
-// Vérifier si le formulaire est soumis
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
     $username = trim($_POST["username"]);
     $email = trim($_POST["email"]);
     $password = $_POST["password"];
     $confirmPassword = $_POST["confirmPassword"];
 
-    // Tentative d'inscription
     $result = $registrationService->register($username, $email, $password, $confirmPassword);
 
     if ($result["success"]) {

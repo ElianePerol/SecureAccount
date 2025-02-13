@@ -12,26 +12,24 @@ $dbConnection = DatabaseConnection::getInstance();
 $userRepository = new UserRepository($dbConnection);
 $authenticationService = new AuthenticationService($userRepository);
 
+$show2FAField = false;
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
     $usernameOrEmail = trim($_POST["usernameOrEmail"]);
     $password = $_POST["password"];
+    $otp = $_POST['otp'] ?? null;
 
-    $result = $authenticationService->authenticate($usernameOrEmail, $password);
+    $result = $authenticationService->authenticate($usernameOrEmail, $password, $otp);
 
-    if ($result["success"]) {
-        header("Location: dashboard.php");
-        exit();
-    } else {
-        session_start();
-
-        if (!isset($result['errors']) || !is_array($result['errors'])) {
-            $result['errors'] = [];
+    if (!$result['success']) {
+        $errors = $result['errors'];
+        if (isset($result['errors']) && in_array('Code 2FA requis', $result['errors'])) {
+            $show2FAField = true;
         }
-
-        $_SESSION["errors"] = $result["errors"];
-
-        // header("Location: login.php");
-        // exit();
+    } else {
+        header('Location: dashboard.php');
+        exit();
     }
 }
 ?>
